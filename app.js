@@ -72,8 +72,10 @@ app.use(bodyParser.json());
 
 const credentials = {
     client_email: config.GOOGLE_CLIENT_EMAIL,
-    private_key: config.GOOGLE_PRIVATE_KEY,
+    private_key: key.private_key,
 };
+
+const { key} = require('./key')
 
 const sessionClient = new dialogflow.SessionsClient(
     {
