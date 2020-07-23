@@ -215,7 +215,7 @@ function handleEcho(messageId, appId, metadata) {
 
 function handleDialogFlowAction(sender, action, messages, contexts, parameters) {
     switch (action) {
-        case 'detailed-application':
+        case 'job-application_detail':
             let filteredContexts = contexts.filter(function(el){
                 return el.name.includes('job-application') ||
                 el.name.includes('job-application-details')
