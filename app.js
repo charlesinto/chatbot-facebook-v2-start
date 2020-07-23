@@ -217,10 +217,12 @@ function handleDialogFlowAction(sender, action, messages, contexts, parameters) 
     switch (action) {
         case 'detailed-application':
             let filteredContexts = contexts.filter(function(el){
-                return el.name.includes('job_application') ||
-                el.name.includes('job-application-details_dialog_context')
+                return el.name.includes('job-application') ||
+                el.name.includes('job-application-details')
             });
+            console.log('context found')
             if(filteredContexts.length > 0 && contexts[0].parameters){
+                console.log('context found')
                let phone_number = (contexts[0].parameters.fields['phone-number']
                && contexts[0].parameters.fields['phone-number'] != '' ) ? 
                contexts[0].parameters.fields['phone-number'].stringValue : '';
@@ -237,6 +239,7 @@ function handleDialogFlowAction(sender, action, messages, contexts, parameters) 
                && contexts[0].parameters.fields['years-of-experience'] != '' ) ? 
                contexts[0].parameters.fields['years-of-experience'].stringValue : '';
                if(phone_number != '' && user_name != '' && job_vacany != '' && previous_job != '' && years_of_experience != ''){
+                    console.log('sending message')
                     let email_content = `A new job enquiry from ${user_name} for the job: ${job_vacany} <br/>
                     previous job position: ${previous_job} . <br />
                     Years of experience: ${years_of_experience} . <br />
