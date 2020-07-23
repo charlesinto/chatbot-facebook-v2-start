@@ -348,6 +348,7 @@ function handleCardMessages(messages, sender) {
 
 
 function handleMessages(messages, sender) {
+    console.log('Called in here handleMessages')
     let timeoutInterval = 1100;
     let previousType ;
     let cardTypes = [];
