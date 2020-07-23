@@ -425,8 +425,9 @@ async function sendToDialogFlow(sender, textString, params) {
                 }
             }
         };
+        console.log('get session')
         const responses = await sessionClient.detectIntent(request);
-
+        console.log('session gotten')
         const result = responses[0].queryResult;
         handleDialogFlowResponse(sender, result);
     } catch (e) {
