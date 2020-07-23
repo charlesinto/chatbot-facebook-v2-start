@@ -77,8 +77,6 @@ const credentials = {
     private_key: key.private_key,
 };
 
-const { key} = require('./key')
-
 const sessionClient = new dialogflow.SessionsClient(
     {
         projectId: config.GOOGLE_PROJECT_ID,
