@@ -246,11 +246,10 @@ function handleDialogFlowAction(sender, action, messages, contexts, parameters) 
                     Phone number: ${phone_number} . <br />`
 
                     sendMail('New Job Application', email_content);
-                    handleMessages(messages, sender);
+                    return handleMessages(messages, sender);
                }else{
-                   handleMessage(messages, sender);
+                   return handleMessages(messages, sender);
                }
-               
             }else{
                 handleMessages(messages, sender);
             }
