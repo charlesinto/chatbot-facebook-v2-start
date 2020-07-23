@@ -174,7 +174,7 @@ function receivedMessage(event) {
     var messageText = message.text;
     var messageAttachments = message.attachments;
     var quickReply = message.quick_reply;
-    return sendTextMessage(senderID, "I'm not sure what you want. Can you be more specific?");
+    // return sendTextMessage(senderID, "I'm not sure what you want. Can you be more specific?");
     if (isEcho) {
         handleEcho(messageId, appId, metadata);
         return;
@@ -402,7 +402,7 @@ function handleDialogFlowResponse(sender, response) {
 }
 
 async function sendToDialogFlow(sender, textString, params) {
-
+    console.log('sent to dialog flow')
     sendTypingOn(sender);
 
     try {
