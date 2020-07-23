@@ -32,6 +32,15 @@ if (!config.GOOGLE_PRIVATE_KEY) {
 if (!config.FB_APP_SECRET) {
     throw new Error('missing FB_APP_SECRET');
 }
+if(!config.SENDGRID_API_KEY){
+    throw new Error('missing SENDGRID_API_KEY');
+}
+if(!config.EMAIL_FROM){
+    throw new Error('missing EMAIL_FROM');
+}
+if(!config.EMAIL_TO){
+    throw new Error('missing EMAIL_TO');
+}
 if (!config.SERVER_URL) { //used for ink to static files
     throw new Error('missing SERVER_URL');
 }
@@ -204,10 +213,71 @@ function handleEcho(messageId, appId, metadata) {
 
 function handleDialogFlowAction(sender, action, messages, contexts, parameters) {
     switch (action) {
+        case 'detailed-application':
+            let filteredContexts = contexts.filter(function(el){
+                return el.name.includes('job_application') ||
+                el.name.includes('job-application-details_dialog_context')
+            });
+            if(filteredContexts.length > 0 && contexts[0].parameters){
+               let phone_number = (contexts[0].parameters.fields['phone-number']
+               && contexts[0].parameters.fields['phone-number'] != '' ) ? 
+               contexts[0].parameters.fields['phone-number'].stringValue : '';
+               let user_name = (contexts[0].parameters.fields['user-name']
+               && contexts[0].parameters.fields['user-name'] != '' ) ? 
+               contexts[0].parameters.fields['user-name'].stringValue : '';
+               let job_vacany = (contexts[0].parameters.fields['job-vacancy']
+               && contexts[0].parameters.fields['job-vacancy'] != '' ) ? 
+               contexts[0].parameters.fields['job-vacancy'].stringValue : '';
+               let previous_job = (contexts[0].parameters.fields['previous-job']
+               && contexts[0].parameters.fields['previous-job'] != '' ) ? 
+               contexts[0].parameters.fields['previous-job'].stringValue : '';
+               let years_of_experience = (contexts[0].parameters.fields['years-of-experience']
+               && contexts[0].parameters.fields['years-of-experience'] != '' ) ? 
+               contexts[0].parameters.fields['years-of-experience'].stringValue : '';
+               if(phone_number != '' && user_name != '' && job_vacany != '' && previous_job != '' && years_of_experience != ''){
+                    let email_content = `A new job enquiry from ${user_name} for the job: ${job_vacany} <br/>
+                    previous job position: ${previous_job} . <br />
+                    Years of experience: ${years_of_experience} . <br />
+                    Phone number: ${phone_number} . <br />`
+
+                    sendMail('New Job Application', email_content);
+                    handleMessages(messages, sender);
+               }else{
+                   handleMessage(messages, sender);
+               }
+               
+            }else{
+                handleMessages(messages, sender);
+            }
+            
+        break;
         default:
             //unhandled action, just send back the text
             handleMessages(messages, sender);
     }
+}
+
+function sendMail(title, body){
+    console.log('sending mail');
+    const sgMail = require('@sendgrid/mail');
+    sgMail.setApiKey(config.SENDGRID_API_KEY);
+
+    let message = {
+        to: config.EMAIL_TO,
+        from: config.EMAIL_FROM,
+        text: body,
+        subject: title,
+        html: body
+    }
+
+    sgMail.send(message)
+        .then(() => {
+            console.log('email sent')
+        })
+        .catch((err) => {
+            console.log('EMAIL not sent')
+            console.error(err.toString())
+        })
 }
 
 function handleMessage(message, sender) {
