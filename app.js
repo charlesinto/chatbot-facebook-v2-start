@@ -215,7 +215,7 @@ function handleEcho(messageId, appId, metadata) {
 
 function handleDialogFlowAction(sender, action, messages, contexts, parameters) {
     switch (action) {
-        case 'fa-delivery':
+        case 'faq-delivery':
             handleMessages(messages, sender)
             sendTypingOn(sender)
             setTimeout(() => {
