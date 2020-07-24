@@ -215,6 +215,29 @@ function handleEcho(messageId, appId, metadata) {
 
 function handleDialogFlowAction(sender, action, messages, contexts, parameters) {
     switch (action) {
+        case 'fa-delivery':
+            handleMessages(messages, sender)
+            sendTypingOn(sender)
+            setTimeout(() => {
+                let buttons = [
+                    {
+                        "type": "web_url",
+                        "url": "http://leggo.ng/",
+                        "title": "visit website",
+                      },
+                      {
+                        "type":"phone_number",
+                        "title":"contact us",
+                        "payload":"+2348163113450"
+                      },
+                    {
+                        "type": "postback",
+                        "title": "continue chatting",
+                        "payload": "CHAT"
+                      }
+                ]
+                sendButtonMessage(sender, 'what would you like to do next', buttons)
+            }, 3000)
         case 'job-application_detail':
             let filteredContexts = contexts.filter(function(el){
                 return el.name.includes('job-application') ||
@@ -791,6 +814,8 @@ function receivedPostback(event) {
     var payload = event.postback.payload;
 
     switch (payload) {
+        case 'CHAT':
+            sendTextMessage(senderID, "I'd love to continue chatting with you, what do you want me to do next?")
         default:
             //unindentified payload
             sendTextMessage(senderID, "I'm not sure what you want. Can you be more specific?");
