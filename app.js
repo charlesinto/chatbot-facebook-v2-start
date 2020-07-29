@@ -834,6 +834,7 @@ function receivedPostback(event) {
 
 async function greetUserText(senderId){
     try{
+        console.log(`sender Id: ${senderId}`)
         const response = await axios.get(`https://graph.facebook.com/v7.0/${senderId}/`, {
             headers: {'access_token': config.FB_PAGE_TOKEN},
         })
