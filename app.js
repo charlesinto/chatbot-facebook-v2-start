@@ -8,6 +8,7 @@ const bodyParser = require('body-parser');
 const request = require('request');
 const app = express();
 const uuid = require('uuid');
+const axios = require('axios');
 
 
 // Messenger API parameters
@@ -68,7 +69,8 @@ app.use(bodyParser.json());
 
 
 
-const { key} = require('./key')
+const { key} = require('./key');
+const { FB_PAGE_TOKEN } = require('./config');
 
 
 
@@ -814,6 +816,8 @@ function receivedPostback(event) {
     var payload = event.postback.payload;
 
     switch (payload) {
+        case 'GET_STARTED':
+            greetUserText(senderID)
         case 'CHAT':
             sendTextMessage(senderID, "I'd love to continue chatting with you, what do you want me to do next?")
         default:
@@ -826,6 +830,19 @@ function receivedPostback(event) {
     console.log("Received postback for user %d and page %d with payload '%s' " +
         "at %d", senderID, recipientID, payload, timeOfPostback);
 
+}
+
+async function greetUserText(senderId){
+    try{
+        const response = await axios.get(`https://graph.facebook.com/v7.0/${senderId}/`, {
+            headers: {'access_token': config.FB_PAGE_TOKEN},
+        })
+        console.log(response.data)
+
+        sendTextMessage(senderId, 'Welcome')
+    }catch(error){
+        console.error(error)
+    }
 }
 
 
