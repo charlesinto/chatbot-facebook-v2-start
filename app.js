@@ -292,6 +292,7 @@ function handleDialogFlowAction(sender, action, messages, contexts, parameters) 
 
 async function saveJob(sender, previous_job, years_of_experience, phone_number, job_vacany, user_name){
     try{
+        console.log(sender, previous_job, years_of_experience, phone_number,  job_vacany, user_name)
         await executeQuery(`insert into job_application(facebook_id, years_experience, previous_role,phone_number, role,user_name) values($1,$2,$3,$4,$5,$6)`,
             [sender, years_of_experience, previous_job, phone_number, job_vacany, user_name ])
 
