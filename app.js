@@ -273,7 +273,7 @@ function handleDialogFlowAction(sender, action, messages, contexts, parameters) 
                     previous job position: ${previous_job} . <br />
                     Years of experience: ${years_of_experience} . <br />
                     Phone number: ${phone_number} . <br />`
-
+                    saveJobApplication(sender, previous_job, years_of_experience, previous_job, phone_number, job_vacany, user_name)
                     sendMail('New Job Application', email_content);
                     return handleMessages(messages, sender);
                }else{
@@ -287,6 +287,18 @@ function handleDialogFlowAction(sender, action, messages, contexts, parameters) 
         default:
             //unhandled action, just send back the text
             handleMessages(messages, sender);
+    }
+}
+
+async function saveJobApplication(sender, previous_job, years_of_experience, previous_job, phone_number, job_vacany, user_name){
+    try{
+        await executeQuery(`insert into job_application(facebook_id, years_experience, previous_role,phone_number, role,user_name) values($1,$2,$3,$4,$5)`,
+            [sender, years_of_experience, previous_job, phone_number, job_vacany, user_name ])
+
+        sendTextMessage(sender, 'Application Processed, we will get in touch with you, Thank you')
+    }catch(error){
+        console.error(error);
+        sendTextMessage(sender, 'Some errors were encountered processing your application, please try again')
     }
 }
 
