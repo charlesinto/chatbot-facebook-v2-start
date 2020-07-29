@@ -9,6 +9,7 @@ const request = require('request');
 const app = express();
 const uuid = require('uuid');
 const axios = require('axios');
+const {executeQuery} = require('./helper')
 
 
 // Messenger API parameters
@@ -44,6 +45,9 @@ if(!config.EMAIL_TO){
 }
 if (!config.SERVER_URL) { //used for ink to static files
     throw new Error('missing SERVER_URL');
+}
+if(!config.DATABASE_URL){
+    throw new Error('Missing DATABASE URL')
 }
 
 
@@ -836,11 +840,11 @@ async function greetUserText(senderId){
     try{
         console.log(`sender Id: ${senderId}`)
         
-        const response = await axios.get(`https://graph.facebook.com/v7.0/${senderId}?access_token=${config.FB_PAGE_TOKEN}`, {
-            headers: {'access_token': config.FB_PAGE_TOKEN},
-        })
+        const response = await axios.get(`https://graph.facebook.com/v7.0/${senderId}?access_token=${config.FB_PAGE_TOKEN}`)
         console.log(response.data)
         const {first_name, last_name} = response.data;
+        const response = await executeQuery('select * from users where facebook_id =$1;', [senderId])
+        console.log(response)
         sendTextMessage(senderId, `Welcome ${first_name} ${last_name}`)
     }catch(error){
         console.error(error)
