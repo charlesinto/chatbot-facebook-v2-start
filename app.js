@@ -842,9 +842,13 @@ async function greetUserText(senderId){
         
         const response = await axios.get(`https://graph.facebook.com/v7.0/${senderId}?access_token=${config.FB_PAGE_TOKEN}`)
         console.log(response.data)
-        const {first_name, last_name} = response.data;
-        const response2 = await executeQuery('select * from users where facebook_id = $1;', [senderId])
-        console.log(response2)
+        const {first_name, last_name, profile_pic} = response.data;
+        const queryResponse = await executeQuery('select * from users where facebook_id = $1;', [senderId])
+        const {rows} = queryResponse;
+        if(rows.length === 0){
+            await executeQuery('insert into users(facebook_id, first_name, last_name, profile_pic)values($1, $2, $3, $4);',
+                 [senderId, first_name, last_name, profile_pic])
+        }
         sendTextMessage(senderId, `Welcome ${first_name} ${last_name}`)
     }catch(error){
         console.error(error)
