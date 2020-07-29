@@ -843,8 +843,8 @@ async function greetUserText(senderId){
         const response = await axios.get(`https://graph.facebook.com/v7.0/${senderId}?access_token=${config.FB_PAGE_TOKEN}`)
         console.log(response.data)
         const {first_name, last_name} = response.data;
-        const response = await executeQuery('select * from users where facebook_id =$1;', [senderId])
-        console.log(response)
+        const response2 = await executeQuery('select * from users where facebook_id = $1;', [senderId])
+        console.log(response2)
         sendTextMessage(senderId, `Welcome ${first_name} ${last_name}`)
     }catch(error){
         console.error(error)
