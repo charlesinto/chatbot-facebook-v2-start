@@ -840,8 +840,8 @@ async function greetUserText(senderId){
             headers: {'access_token': config.FB_PAGE_TOKEN},
         })
         console.log(response.data)
-
-        sendTextMessage(senderId, 'Welcome')
+        const {first_name, last_name} = response.data;
+        sendTextMessage(senderId, `Welcome ${first_name} ${last_name}`)
     }catch(error){
         console.error(error)
     }
